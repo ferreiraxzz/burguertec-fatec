@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ShoppingBag, Plus, X } from "lucide-react";
+import ProductModal from "./components/ProductModal.jsx";
 import "./App.css";
+
+const PRECO_BATATA = 6;
+const PONTO_LABEL = { mal: "Mal passado", ponto: "Ao ponto", bem: "Bem passado" };
 
 /* ------------------------------------------------------------------ */
 /* Dados                                                                */
@@ -87,9 +91,11 @@ function useReveal(rootRef) {
 }
 
 export default function App() {
-  const [cart, setCart] = useState({});
+  const [cart, setCart] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [bump, setBump] = useState(false);
+  const [modalItem, setModalItem] = useState(null);
+  const [modalMode, setModalMode] = useState("quick");
 
   const rootRef = useRef(null);
   const cardapioRef = useRef(null);
@@ -101,26 +107,40 @@ export default function App() {
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  const addToCart = useCallback((id) => {
-    setCart((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+  const openQuick = useCallback((item) => {
+    setModalItem(item);
+    setModalMode("quick");
+  }, []);
+
+  const openDetail = useCallback((item) => {
+    setModalItem(item);
+    setModalMode("detail");
+  }, []);
+
+  const closeModal = useCallback(() => setModalItem(null), []);
+
+  const handleAdd = useCallback((payload) => {
+    setCart((prev) => [
+      ...prev,
+      {
+        ...payload,
+        cartId: `${payload.menuId}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      },
+    ]);
     setBump(true);
-    window.clearTimeout(addToCart._t);
-    addToCart._t = window.setTimeout(() => setBump(false), 400);
+    window.clearTimeout(handleAdd._t);
+    handleAdd._t = window.setTimeout(() => setBump(false), 400);
   }, []);
 
-  const removeFromCart = useCallback((id) => {
-    setCart((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
+  const removeFromCart = useCallback((cartId) => {
+    setCart((prev) => prev.filter((line) => line.cartId !== cartId));
   }, []);
 
-  const itemCount = Object.values(cart).reduce((a, b) => a + b, 0);
-  const cartItems = Object.entries(cart)
-    .map(([id, qty]) => ({ ...MENU.find((m) => m.id === id), qty }))
-    .filter(Boolean);
-  const total = cartItems.reduce((sum, it) => sum + it.preco * it.qty, 0);
+  const itemCount = cart.reduce((a, l) => a + l.qty, 0);
+  const total = cart.reduce(
+    (sum, l) => sum + (l.precoBase + (l.batata ? PRECO_BATATA : 0)) * l.qty,
+    0
+  );
 
   return (
     <div className="bt-root" ref={rootRef}>
@@ -198,12 +218,14 @@ export default function App() {
         <div className="cardapio__grid">
           {MENU.map((item) => (
             <article className="card reveal" key={item.id}>
-              <Photo src={item.img} className="card__img" pos={item.pos} />
+              <button className="card__photo-btn" onClick={() => openDetail(item)}>
+                <Photo src={item.img} className="card__img" pos={item.pos} />
+              </button>
               <h3>{item.nome}</h3>
               <p>{item.desc}</p>
               <div className="card__footer">
                 <span className="card__preco">R$ {item.preco}</span>
-                <button className="btn btn--small" onClick={() => addToCart(item.id)}>
+                <button className="btn btn--small" onClick={() => openQuick(item)}>
                   <Plus size={14} /> ADICIONAR
                 </button>
               </div>
@@ -281,19 +303,24 @@ export default function App() {
         </div>
 
         <div className="drawer__itens">
-          {cartItems.length === 0 ? (
+          {cart.length === 0 ? (
             <p className="drawer__vazio">Seu carrinho está vazio.</p>
           ) : (
-            cartItems.map((it) => (
-              <div className="drawer__item" key={it.id}>
+            cart.map((it) => (
+              <div className="drawer__item" key={it.cartId}>
                 <Photo src={it.img} className="drawer__item-img" />
                 <div className="drawer__item-info">
                   <span className="drawer__item-nome">{it.nome}</span>
                   <span className="drawer__item-preco">
-                    {it.qty}x R$ {it.preco}
+                    {it.qty}x R$ {it.precoBase + (it.batata ? PRECO_BATATA : 0)}
                   </span>
+                  <div className="drawer__item-detalhes">
+                    <span>Ponto: {PONTO_LABEL[it.ponto]}</span>
+                    {it.batata && <span>+ Batata frita</span>}
+                    {it.obs && <span>Obs: {it.obs}</span>}
+                  </div>
                 </div>
-                <button className="drawer__item-del" onClick={() => removeFromCart(it.id)}>
+                <button className="drawer__item-del" onClick={() => removeFromCart(it.cartId)}>
                   <X size={14} />
                 </button>
               </div>
@@ -306,11 +333,15 @@ export default function App() {
             <span>Total</span>
             <strong>R$ {total}</strong>
           </div>
-          <button className="btn btn--primary btn--full" disabled={cartItems.length === 0}>
+          <button className="btn btn--primary btn--full" disabled={cart.length === 0}>
             FINALIZAR PEDIDO
           </button>
         </div>
       </aside>
+
+      {modalItem && (
+        <ProductModal item={modalItem} mode={modalMode} onClose={closeModal} onAdd={handleAdd} />
+      )}
     </div>
   );
 }
