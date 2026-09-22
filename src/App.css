@@ -49,3 +49,22 @@ html, body{
   font-size:0.68rem; letter-spacing:0.2em;
 }
 .scroll-indicator__line{ width:1px; height:38px; background:rgba(255,255,255,0.4); }
+
+/* ---------- section shells ---------- */
+.section-head{ max-width:1400px; margin:0 auto 2rem; padding:0 2.5rem; }
+
+/* ---------- cardapio ---------- */
+.cardapio{ padding:4rem 0; }
+.cardapio__grid{
+  max-width:1400px; margin:0 auto; padding:0 2.5rem;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:2rem;
+}
+.card{ display:flex; flex-direction:column; }
+.card__img{
+  width:100%; aspect-ratio:4/3; background-size:cover; background-position:center;
+  margin-bottom:1rem;
+}
+.card h3{ margin:0 0 0.5rem; }
+.card p{ font-size:0.88rem; line-height:1.5; margin-bottom:1rem; }
+.card__footer{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
+.card__preco{ font-weight:700; }
