@@ -63,6 +63,7 @@ function Photo({ src, className, pos }) {
 
 export default function App() {
   const cardapioRef = useRef(null);
+  const sobreRef = useRef(null);
 
   const scrollTo = useCallback((ref) => {
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -80,7 +81,9 @@ export default function App() {
             <button className="navlink" onClick={() => scrollTo(cardapioRef)}>
               CARDÁPIO
             </button>
-            <button className="navlink">SOBRE</button>
+            <button className="navlink" onClick={() => scrollTo(sobreRef)}>
+              SOBRE
+            </button>
           </nav>
         </div>
       </header>
@@ -141,6 +144,53 @@ export default function App() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      {/* ---------------- SOBRE ---------------- */}
+      <section id="sobre" ref={sobreRef} className="sobre">
+        <div className="sobre__grid">
+          <div className="sobre__texto">
+            <span className="eyebrow eyebrow--inline">NOSSA HISTÓRIA</span>
+            <h2>
+              AMOR E
+              <br />
+              <span className="text-red">BRASA</span>
+            </h2>
+            <p>
+              A BURGUERTEC nasceu de uma obsessão: fazer o hambúrguer
+              perfeito. Em 2018, abrimos as portas com uma chapa, um sonho e
+              uma receita de blend testada por anos.
+            </p>
+            <p>
+              Hoje somos referência em smash burgers artesanais na cidade.
+              Cada ingrediente é escolhido com cuidado, cada blend é formado
+              na hora, e cada sanduíche sai da chapa diretamente para a sua
+              mesa.
+            </p>
+            <div className="stats">
+              <div className="stats__item">
+                <strong>6+</strong>
+                <span>ANOS</span>
+              </div>
+              <div className="stats__item">
+                <strong>50k+</strong>
+                <span>BURGERS</span>
+              </div>
+              <div className="stats__item">
+                <strong>4.9★</strong>
+                <span>AVALIAÇÃO</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="sobre__foto-wrap">
+            <div className="sobre__foto-frame" />
+            <Photo
+              src="https://images.unsplash.com/photo-1571805618149-3a772570ebcd?auto=format&fit=crop&w=900&q=80"
+              className="sobre__foto"
+            />
+          </div>
         </div>
       </section>
     </div>
