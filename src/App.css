@@ -27,3 +27,25 @@ html, body{
   background:none; border:none; font-weight:600; font-size:0.82rem;
   letter-spacing:0.08em; cursor:pointer;
 }
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative; min-height:80vh; display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.hero__bg{
+  position:absolute; inset:0; background-size:cover; background-position:center;
+}
+.hero__overlay{
+  position:absolute; inset:0; background:rgba(0,0,0,0.55);
+}
+.hero__content{
+  position:relative; z-index:1; max-width:560px; text-align:center; padding:0 1.5rem;
+}
+.hero__title{ font-size:3rem; line-height:1; margin:1rem 0; text-transform:uppercase; }
+.hero__sub{ margin:1rem auto 1.5rem; max-width:420px; }
+.scroll-indicator{
+  margin-top:2.5rem; display:flex; flex-direction:column; align-items:center; gap:0.6rem;
+  font-size:0.68rem; letter-spacing:0.2em;
+}
+.scroll-indicator__line{ width:1px; height:38px; background:rgba(255,255,255,0.4); }
