@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ShoppingBag, Plus, X } from "lucide-react";
 import ProductModal from "./components/ProductModal.jsx";
 import Login from "./pages/Login.jsx";
+import Cadastro from "./pages/Cadastro.jsx";
 import "./App.css";
 
 const PRECO_BATATA = 6;
@@ -353,7 +354,10 @@ export default function App() {
       {authView && (
         <div className="auth-overlay">
           {authView === "login" && (
-            <Login onBack={() => setAuthView(null)} onSwitch={() => setAuthView(null)} />
+            <Login onBack={() => setAuthView(null)} onSwitch={() => setAuthView("cadastro")} />
+          )}
+          {authView === "cadastro" && (
+            <Cadastro onBack={() => setAuthView("login")} onSwitch={() => setAuthView("login")} />
           )}
         </div>
       )}
