@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ShoppingBag, Plus, X } from "lucide-react";
 import "./App.css";
 
 /* ------------------------------------------------------------------ */
@@ -86,6 +87,10 @@ function useReveal(rootRef) {
 }
 
 export default function App() {
+  const [cart, setCart] = useState({});
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [bump, setBump] = useState(false);
+
   const rootRef = useRef(null);
   const cardapioRef = useRef(null);
   const sobreRef = useRef(null);
@@ -95,6 +100,27 @@ export default function App() {
   const scrollTo = useCallback((ref) => {
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
+
+  const addToCart = useCallback((id) => {
+    setCart((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+    setBump(true);
+    window.clearTimeout(addToCart._t);
+    addToCart._t = window.setTimeout(() => setBump(false), 400);
+  }, []);
+
+  const removeFromCart = useCallback((id) => {
+    setCart((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  }, []);
+
+  const itemCount = Object.values(cart).reduce((a, b) => a + b, 0);
+  const cartItems = Object.entries(cart)
+    .map(([id, qty]) => ({ ...MENU.find((m) => m.id === id), qty }))
+    .filter(Boolean);
+  const total = cartItems.reduce((sum, it) => sum + it.preco * it.qty, 0);
 
   return (
     <div className="bt-root" ref={rootRef}>
@@ -112,6 +138,15 @@ export default function App() {
               SOBRE
             </button>
           </nav>
+
+          <button
+            className={`cart-btn ${bump ? "cart-btn--bump" : ""}`}
+            onClick={() => setDrawerOpen(true)}
+          >
+            <ShoppingBag size={16} />
+            Carrinho
+            {itemCount > 0 && <span className="cart-btn__badge">{itemCount}</span>}
+          </button>
         </div>
       </header>
 
@@ -168,6 +203,9 @@ export default function App() {
               <p>{item.desc}</p>
               <div className="card__footer">
                 <span className="card__preco">R$ {item.preco}</span>
+                <button className="btn btn--small" onClick={() => addToCart(item.id)}>
+                  <Plus size={14} /> ADICIONAR
+                </button>
               </div>
             </article>
           ))}
@@ -228,6 +266,51 @@ export default function App() {
         </div>
         <p>© {new Date().getFullYear()} BURGUERTEC Hamburgueria — Todos os direitos reservados</p>
       </footer>
+
+      {/* ---------------- CARRINHO (drawer) ---------------- */}
+      <div
+        className={`overlay ${drawerOpen ? "overlay--visible" : ""}`}
+        onClick={() => setDrawerOpen(false)}
+      />
+      <aside className={`drawer ${drawerOpen ? "drawer--open" : ""}`}>
+        <div className="drawer__header">
+          <h3>Seu Pedido</h3>
+          <button onClick={() => setDrawerOpen(false)} aria-label="Fechar carrinho">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="drawer__itens">
+          {cartItems.length === 0 ? (
+            <p className="drawer__vazio">Seu carrinho está vazio.</p>
+          ) : (
+            cartItems.map((it) => (
+              <div className="drawer__item" key={it.id}>
+                <Photo src={it.img} className="drawer__item-img" />
+                <div className="drawer__item-info">
+                  <span className="drawer__item-nome">{it.nome}</span>
+                  <span className="drawer__item-preco">
+                    {it.qty}x R$ {it.preco}
+                  </span>
+                </div>
+                <button className="drawer__item-del" onClick={() => removeFromCart(it.id)}>
+                  <X size={14} />
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="drawer__footer">
+          <div className="drawer__total">
+            <span>Total</span>
+            <strong>R$ {total}</strong>
+          </div>
+          <button className="btn btn--primary btn--full" disabled={cartItems.length === 0}>
+            FINALIZAR PEDIDO
+          </button>
+        </div>
+      </aside>
     </div>
   );
 }
