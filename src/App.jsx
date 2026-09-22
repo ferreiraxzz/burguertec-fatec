@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import "./App.css";
 
 /* ------------------------------------------------------------------ */
@@ -61,16 +61,43 @@ function Photo({ src, className, pos }) {
   );
 }
 
+/* ------------------------------------------------------------------ */
+/* Scroll reveal                                                        */
+/* ------------------------------------------------------------------ */
+function useReveal(rootRef) {
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const els = root.querySelectorAll(".reveal");
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, [rootRef]);
+}
+
 export default function App() {
+  const rootRef = useRef(null);
   const cardapioRef = useRef(null);
   const sobreRef = useRef(null);
+
+  useReveal(rootRef);
 
   const scrollTo = useCallback((ref) => {
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   return (
-    <div className="bt-root">
+    <div className="bt-root" ref={rootRef}>
       <header className="navbar">
         <div className="navbar__inner">
           <div className="brand">
@@ -100,22 +127,22 @@ export default function App() {
         />
         <div className="hero__overlay" />
         <div className="hero__content">
-          <div className="eyebrow">— DESDE 2018 —</div>
-          <h1 className="hero__title">
+          <div className="eyebrow reveal">— DESDE 2018 —</div>
+          <h1 className="hero__title reveal">
             FEITO
             <br />
             <span className="text-red">COM</span>
             <br />
             FOGO.
           </h1>
-          <p className="hero__sub">
+          <p className="hero__sub reveal">
             Blends artesanais, ingredientes selecionados e aquele smash que
             você vai lembrar pra sempre.
           </p>
-          <button className="btn btn--primary" onClick={() => scrollTo(cardapioRef)}>
+          <button className="btn btn--primary reveal" onClick={() => scrollTo(cardapioRef)}>
             VER CARDÁPIO
           </button>
-          <div className="scroll-indicator">
+          <div className="scroll-indicator reveal">
             <span>SCROLL</span>
             <div className="scroll-indicator__line" />
           </div>
@@ -124,7 +151,7 @@ export default function App() {
 
       {/* ---------------- CARDÁPIO ---------------- */}
       <section id="cardapio" ref={cardapioRef} className="cardapio">
-        <div className="section-head">
+        <div className="section-head reveal">
           <span className="eyebrow eyebrow--inline">NOSSO CARDÁPIO</span>
           <h2>
             ESCOLHA O SEU
@@ -135,7 +162,7 @@ export default function App() {
 
         <div className="cardapio__grid">
           {MENU.map((item) => (
-            <article className="card" key={item.id}>
+            <article className="card reveal" key={item.id}>
               <Photo src={item.img} className="card__img" pos={item.pos} />
               <h3>{item.nome}</h3>
               <p>{item.desc}</p>
@@ -150,7 +177,7 @@ export default function App() {
       {/* ---------------- SOBRE ---------------- */}
       <section id="sobre" ref={sobreRef} className="sobre">
         <div className="sobre__grid">
-          <div className="sobre__texto">
+          <div className="sobre__texto reveal">
             <span className="eyebrow eyebrow--inline">NOSSA HISTÓRIA</span>
             <h2>
               AMOR E
@@ -184,7 +211,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="sobre__foto-wrap">
+          <div className="sobre__foto-wrap reveal">
             <div className="sobre__foto-frame" />
             <Photo
               src="https://images.unsplash.com/photo-1571805618149-3a772570ebcd?auto=format&fit=crop&w=900&q=80"
