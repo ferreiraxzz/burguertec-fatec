@@ -193,6 +193,14 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {/* ---------------- FOOTER ---------------- */}
+      <footer className="footer">
+        <div className="brand brand--footer">
+          BURGUER<span className="brand__accent">TEC</span>
+        </div>
+        <p>© {new Date().getFullYear()} BURGUERTEC Hamburgueria — Todos os direitos reservados</p>
+      </footer>
     </div>
   );
 }
