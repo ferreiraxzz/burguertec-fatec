@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ShoppingBag, Plus, X } from "lucide-react";
 import ProductModal from "./components/ProductModal.jsx";
+import Login from "./pages/Login.jsx";
 import "./App.css";
 
 const PRECO_BATATA = 6;
@@ -96,6 +97,7 @@ export default function App() {
   const [bump, setBump] = useState(false);
   const [modalItem, setModalItem] = useState(null);
   const [modalMode, setModalMode] = useState("quick");
+  const [authView, setAuthView] = useState(null);
 
   const rootRef = useRef(null);
   const cardapioRef = useRef(null);
@@ -159,14 +161,19 @@ export default function App() {
             </button>
           </nav>
 
-          <button
-            className={`cart-btn ${bump ? "cart-btn--bump" : ""}`}
-            onClick={() => setDrawerOpen(true)}
-          >
-            <ShoppingBag size={16} />
-            Carrinho
-            {itemCount > 0 && <span className="cart-btn__badge">{itemCount}</span>}
-          </button>
+          <div className="navbar__actions">
+            <button className="btn btn--outline" onClick={() => setAuthView("login")}>
+              ENTRAR
+            </button>
+            <button
+              className={`cart-btn ${bump ? "cart-btn--bump" : ""}`}
+              onClick={() => setDrawerOpen(true)}
+            >
+              <ShoppingBag size={16} />
+              Carrinho
+              {itemCount > 0 && <span className="cart-btn__badge">{itemCount}</span>}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -341,6 +348,14 @@ export default function App() {
 
       {modalItem && (
         <ProductModal item={modalItem} mode={modalMode} onClose={closeModal} onAdd={handleAdd} />
+      )}
+
+      {authView && (
+        <div className="auth-overlay">
+          {authView === "login" && (
+            <Login onBack={() => setAuthView(null)} onSwitch={() => setAuthView(null)} />
+          )}
+        </div>
       )}
     </div>
   );

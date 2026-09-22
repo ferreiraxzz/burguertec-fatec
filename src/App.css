@@ -344,3 +344,82 @@ html, body{
   .reveal{ transition:none; opacity:1; transform:none; }
   .hero__bg, .scroll-indicator__line{ animation:none; }
 }
+
+/* ---------- navbar actions / botão outline (Entrar) ---------- */
+.navbar__actions{ display:flex; align-items:center; gap:0.8rem; }
+.btn--outline{
+  background:transparent; border:1px solid var(--line); color:#fff;
+  padding:0.6rem 1.2rem; font-size:0.85rem;
+}
+.btn--outline:hover{ border-color:#fff; background:rgba(255,255,255,0.05); }
+
+/* ---------- telas de autenticação (login / cadastro) ---------- */
+.auth{
+  min-height:100vh; width:100%; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:3rem 1.5rem;
+  background:var(--bg); box-sizing:border-box;
+}
+.auth__header{ text-align:center; margin-bottom:2.2rem; }
+.auth__logo{ font-family:var(--display); font-weight:900; font-size:1.6rem; color:#fff; }
+.auth__tagline{
+  display:block; margin-top:0.45rem; font-size:0.72rem; letter-spacing:0.2em; color:var(--gray-dim);
+}
+
+.auth__card{
+  width:100%; max-width:420px; background:#111111; border:1px solid var(--line);
+  border-radius:12px; padding:2.4rem 2.2rem; box-sizing:border-box;
+}
+.auth__back{
+  display:inline-flex; align-items:center; gap:0.4rem; background:none; border:none;
+  color:var(--gray); font-size:0.82rem; cursor:pointer; margin-bottom:1.6rem; padding:0;
+  transition:color .2s ease; font-family:var(--body);
+}
+.auth__back:hover{ color:#fff; }
+
+.auth__title{ font-family:var(--display); font-weight:700; font-size:1.5rem; color:#fff; margin:0 0 0.3rem; }
+.auth__subtitle{ color:var(--gray); font-size:0.88rem; margin-bottom:1.8rem; }
+
+.auth__form{ display:flex; flex-direction:column; gap:1.1rem; }
+
+.field{ display:flex; flex-direction:column; gap:0.5rem; }
+.field-row{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.field label{
+  font-size:0.7rem; font-weight:700; letter-spacing:0.08em; color:var(--gray-dim);
+}
+.field input{
+  background:#0a0a0a; border:1px solid var(--line); border-radius:6px; color:#fff;
+  padding:0.75rem 0.9rem; font-family:var(--body); font-size:0.9rem; outline:none;
+  transition:border-color .2s ease; width:100%; box-sizing:border-box;
+}
+.field input::placeholder{ color:#5c5c5c; }
+.field input:focus{ border-color:var(--red); }
+
+.field__input-wrap{ position:relative; display:flex; align-items:center; }
+.field__input-wrap input{ padding-right:2.6rem; }
+.field__toggle{
+  position:absolute; right:0.8rem; background:none; border:none; color:var(--gray-dim);
+  cursor:pointer; display:flex; align-items:center;
+}
+.field__toggle:hover{ color:#fff; }
+
+.auth__forgot{
+  align-self:flex-end; color:var(--red); font-size:0.8rem; text-decoration:none; margin-top:-0.4rem;
+}
+.auth__forgot:hover{ text-decoration:underline; }
+
+.auth__switch{ text-align:center; margin-top:1.6rem; font-size:0.85rem; color:var(--gray); }
+.auth__switch button{
+  background:none; border:none; color:var(--red); font-weight:700; cursor:pointer;
+  text-decoration:underline; font-size:0.85rem; padding:0; font-family:var(--body);
+}
+
+@media (max-width: 480px){
+  .auth__card{ padding:2rem 1.4rem; }
+  .field-row{ grid-template-columns:1fr; }
+}
+
+/* ---------- overlay de autenticação (login/cadastro por cima da Home) ---------- */
+.auth-overlay{
+  position:fixed; inset:0; z-index:100; overflow-y:auto;
+  background:var(--bg);
+}
