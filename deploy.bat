@@ -1,0 +1,9 @@
+@echo off
+echo Instalando dependencias...
+call npm install
+
+echo Buildando frontend (Vite)...
+call npm run build
+
+echo Iniciando servidor (porta unica)...
+call npm start

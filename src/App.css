@@ -1,0 +1,29 @@
+html, body{
+  margin:0;
+  padding:0;
+}
+#root{
+  min-height:100vh;
+}
+
+.bt-root{
+  min-height:100vh;
+}
+.bt-root *{ box-sizing:border-box; }
+
+/* ---------- navbar ---------- */
+.navbar{
+  padding:1.1rem 0;
+}
+.navbar__inner{
+  max-width:1400px; margin:0 auto; padding:0 2.5rem;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.brand{ font-weight:900; font-size:1.25rem; letter-spacing:0.5px; }
+.brand__accent{ color:#e2352b; }
+
+.navlinks{ display:flex; gap:2.6rem; }
+.navlink{
+  background:none; border:none; font-weight:600; font-size:0.82rem;
+  letter-spacing:0.08em; cursor:pointer;
+}
