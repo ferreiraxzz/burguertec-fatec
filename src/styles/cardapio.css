@@ -1,0 +1,184 @@
+/* ==========================================================================
+   Cardápio folheável (CardapioSecoes.jsx)
+   Bloco próprio `cardapio-paginas` para não colidir com as regras antigas
+   `.cardapio__abas/.cardapio__aba/.cardapio__secao*` do App.css.
+   ========================================================================== */
+
+.cardapio-paginas{ position:relative; }
+
+/* texto só para leitor de tela */
+.cardapio-paginas__sr{
+  position:absolute !important; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0;
+}
+
+/* ---------- abas ---------- */
+.cardapio-paginas__abas{
+  position:relative; /* offsetParent das abas (rolagem horizontal no celular) */
+  max-width:1400px; margin:0 auto 2rem; padding:0 2.5rem;
+  display:flex; gap:0.4rem; flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; scrollbar-width:none;
+  border-bottom:1px solid var(--line);
+  scroll-margin-top:90px; /* navbar fixa */
+}
+.cardapio-paginas__abas::-webkit-scrollbar{ display:none; }
+
+.cardapio-paginas__aba{
+  flex-shrink:0; position:relative;
+  background:none; border:none; color:var(--gray); cursor:pointer;
+  padding:0.9rem 1.1rem; margin-bottom:-1px;
+  font-family:var(--display); font-weight:700; font-size:1.05rem;
+  letter-spacing:0.03em; text-transform:uppercase;
+  border-bottom:3px solid transparent;
+  transition:color .2s ease, border-color .2s ease;
+}
+.cardapio-paginas__aba:hover{ color:#fff; }
+.cardapio-paginas__aba--ativa{ color:#fff; border-bottom-color:var(--red); }
+.cardapio-paginas__aba:focus-visible{ outline:2px solid var(--red); outline-offset:-2px; border-radius:4px 4px 0 0; }
+
+/* ---------- palco (páginas) ---------- */
+.cardapio-paginas__palco{
+  --arrasto:0px;
+  position:relative;
+  overflow:hidden; overflow:clip;
+  perspective:1600px;
+  transition:height var(--cardapio-duracao, 450ms) cubic-bezier(.4,0,.2,1);
+  touch-action:pan-y pinch-zoom; /* vertical fica com o navegador; horizontal é swipe */
+}
+
+.cardapio-paginas__painel{
+  /* respiro para o zoom da foto no hover e para o anel de foco não serem cortados */
+  padding-block:0.75rem;
+  transform:translateX(var(--arrasto));
+  transition:transform .25s ease;
+}
+.cardapio-paginas__palco[data-arrastando] .cardapio-paginas__painel{ transition:none; }
+.cardapio-paginas__painel[hidden]{ display:none; }
+
+/* página que sai fica por cima, fora do fluxo; a que entra define a altura */
+.cardapio-paginas__painel--sai-avanca,
+.cardapio-paginas__painel--sai-volta{
+  position:absolute; inset:0 0 auto 0; pointer-events:none;
+}
+
+.cardapio-paginas__painel--entra-avanca{
+  transform-origin:left center;
+  animation:cardapio-entra-avanca var(--cardapio-duracao, 450ms) cubic-bezier(.22,.7,.2,1) both;
+}
+.cardapio-paginas__painel--entra-volta{
+  transform-origin:right center;
+  animation:cardapio-entra-volta var(--cardapio-duracao, 450ms) cubic-bezier(.22,.7,.2,1) both;
+}
+.cardapio-paginas__painel--sai-avanca{
+  transform-origin:left center;
+  animation:cardapio-sai-avanca var(--cardapio-duracao, 450ms) cubic-bezier(.4,0,.6,1) both;
+}
+.cardapio-paginas__painel--sai-volta{
+  transform-origin:right center;
+  animation:cardapio-sai-volta var(--cardapio-duracao, 450ms) cubic-bezier(.4,0,.6,1) both;
+}
+
+/* folha virando: deslize lateral com leve giro em Y */
+@keyframes cardapio-entra-avanca{
+  from{ opacity:0; transform:translateX(35%) rotateY(-14deg); }
+  to{ opacity:1; transform:translateX(0) rotateY(0); }
+}
+@keyframes cardapio-entra-volta{
+  from{ opacity:0; transform:translateX(-35%) rotateY(14deg); }
+  to{ opacity:1; transform:translateX(0) rotateY(0); }
+}
+@keyframes cardapio-sai-avanca{
+  from{ opacity:1; transform:translateX(var(--arrasto-saida, 0px)) rotateY(0); }
+  to{ opacity:0; transform:translateX(-30%) rotateY(12deg); }
+}
+@keyframes cardapio-sai-volta{
+  from{ opacity:1; transform:translateX(var(--arrasto-saida, 0px)) rotateY(0); }
+  to{ opacity:0; transform:translateX(30%) rotateY(-12deg); }
+}
+
+/* ---------- seção única (fallback) ---------- */
+.cardapio-paginas__titulo{
+  max-width:1400px; margin:0 auto 1.6rem; padding:0 2.5rem;
+  font-family:var(--display); font-weight:900; font-size:1.6rem; text-transform:uppercase; color:#fff;
+}
+
+/* ---------- rodapé: anterior / indicador / próxima ---------- */
+.cardapio-paginas__rodape{
+  max-width:1400px; margin:2.4rem auto 0; padding:1.6rem 2.5rem 0;
+  border-top:1px solid var(--line);
+  display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:1rem;
+}
+
+.cardapio-paginas__nav{
+  display:inline-flex; align-items:center; gap:0.7rem; min-width:0; max-width:100%;
+  background:#111111; border:1px solid var(--line); border-radius:8px; color:#fff;
+  padding:0.7rem 1rem; cursor:pointer; font-family:var(--body); text-align:left;
+  transition:border-color .2s ease, background .2s ease;
+}
+.cardapio-paginas__nav--anterior{ justify-self:start; }
+.cardapio-paginas__nav--proxima{ justify-self:end; text-align:right; }
+.cardapio-paginas__nav:hover{ border-color:var(--red); background:rgba(226,53,43,0.08); }
+.cardapio-paginas__nav:focus-visible{ outline:2px solid var(--red); outline-offset:2px; }
+.cardapio-paginas__nav svg{ flex-shrink:0; color:var(--red); }
+
+.cardapio-paginas__nav-texto{ display:flex; flex-direction:column; min-width:0; }
+.cardapio-paginas__nav-texto small{
+  font-size:0.66rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gray-dim);
+}
+.cardapio-paginas__nav-texto strong{
+  font-family:var(--display); font-size:1rem; font-weight:700;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+.cardapio-paginas__indicador{ display:flex; flex-direction:column; align-items:center; gap:0.45rem; }
+.cardapio-paginas__bolinhas{ display:flex; gap:0.45rem; }
+.cardapio-paginas__bolinha{
+  width:8px; height:8px; border-radius:999px; background:#3a3a3a;
+  transition:width .3s ease, background .3s ease;
+}
+.cardapio-paginas__bolinha--ativa{ width:22px; background:var(--red); }
+.cardapio-paginas__contagem{
+  font-size:0.72rem; font-weight:600; letter-spacing:0.12em; color:var(--gray); font-variant-numeric:tabular-nums;
+}
+
+/* ---------- card: selo "Esgotado" ---------- */
+.card__midia{ position:relative; }
+.card__selo-esgotado{
+  position:absolute; top:0.7rem; left:0.7rem; pointer-events:none;
+  background:rgba(10,10,10,0.85); color:#fff; border:1px solid rgba(255,255,255,0.25);
+  border-radius:999px; padding:0.3rem 0.75rem;
+  font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+}
+.card--esgotado .card__img{ filter:grayscale(1) brightness(0.6); }
+.card--esgotado .card__preco{ color:var(--gray-dim); }
+.card .btn--small:disabled{
+  background:#2a2a2a; color:var(--gray); cursor:not-allowed; transform:none;
+}
+
+/* ---------- responsivo ---------- */
+@media (max-width: 640px){
+  .cardapio-paginas__abas{ padding:0 1rem; margin-bottom:1.4rem; }
+  .cardapio-paginas__aba{ font-size:0.9rem; padding:0.8rem 0.8rem; }
+  .cardapio-paginas__titulo{ padding:0 1rem; }
+  .cardapio-paginas__rodape{ padding:1.2rem 1rem 0; gap:0.5rem; margin-top:1.6rem; }
+  .cardapio-paginas__nav{ padding:0.6rem 0.7rem; gap:0.4rem; }
+  .cardapio-paginas__nav-texto strong{ font-size:0.85rem; }
+  .cardapio-paginas__nav-texto small{ font-size:0.6rem; }
+}
+@media (max-width: 400px){
+  /* sem espaço para o nome: fica só a seta (o nome continua no nome acessível) */
+  .cardapio-paginas__nav-texto small{ display:none; }
+  .cardapio-paginas__nav-texto strong{ max-width:6.5rem; }
+}
+
+/* ---------- sem animação ---------- */
+@media (prefers-reduced-motion: reduce){
+  .cardapio-paginas__palco,
+  .cardapio-paginas__painel,
+  .cardapio-paginas__aba,
+  .cardapio-paginas__bolinha{ transition:none; }
+  .cardapio-paginas__painel{ transform:none; }
+  .cardapio-paginas__painel--entra-avanca,
+  .cardapio-paginas__painel--entra-volta,
+  .cardapio-paginas__painel--sai-avanca,
+  .cardapio-paginas__painel--sai-volta{ animation:none; }
+}

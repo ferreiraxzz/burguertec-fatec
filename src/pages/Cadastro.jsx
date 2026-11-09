@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { traduzirErro, useAuth } from "../context/AuthContext.jsx";
 
-export default function Cadastro({ onBack, onSwitch }) {
+const soDigitos = (v) => v.replace(/\D/g, "");
+
+export default function Cadastro({ onBack, onSwitch, onSuccess }) {
+  const { signUp } = useAuth();
   const [form, setForm] = useState({
     nome: "",
     email: "",
@@ -11,14 +15,45 @@ export default function Cadastro({ onBack, onSwitch }) {
     confirmarSenha: "",
   });
   const [showSenha, setShowSenha] = useState(false);
+  const [msg, setMsg] = useState(null); // { tipo: "erro" | "sucesso", texto }
+  const [enviando, setEnviando] = useState(false);
 
   const update = (campo) => (e) =>
     setForm((prev) => ({ ...prev, [campo]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Apenas front-end: aqui entraria a chamada real de cadastro
-    console.log("cadastro", form);
+    setMsg(null);
+
+    if (form.senha !== form.confirmarSenha) {
+      setMsg({ tipo: "erro", texto: "As senhas não conferem." });
+      return;
+    }
+
+    setEnviando(true);
+    const { data, error } = await signUp({
+      email: form.email.trim(),
+      senha: form.senha,
+      nome: form.nome.trim(),
+      telefone: soDigitos(form.telefone),
+      cpf: soDigitos(form.cpf),
+    });
+    setEnviando(false);
+
+    if (error) {
+      setMsg({ tipo: "erro", texto: traduzirErro(error) });
+      return;
+    }
+
+    if (data.session) {
+      onSuccess?.();
+      return;
+    }
+
+    setMsg({
+      tipo: "sucesso",
+      texto: "Conta criada! Enviamos um link para o seu e-mail. Confirme o cadastro para entrar.",
+    });
   };
 
   return (
@@ -123,8 +158,17 @@ export default function Cadastro({ onBack, onSwitch }) {
             />
           </div>
 
-          <button type="submit" className="btn btn--primary btn--full">
-            CRIAR CONTA
+          {msg && (
+            <p
+              className={`auth__msg auth__msg--${msg.tipo}`}
+              role={msg.tipo === "erro" ? "alert" : "status"}
+            >
+              {msg.texto}
+            </p>
+          )}
+
+          <button type="submit" className="btn btn--primary btn--full" disabled={enviando}>
+            {enviando ? "CRIANDO..." : "CRIAR CONTA"}
           </button>
         </form>
 
