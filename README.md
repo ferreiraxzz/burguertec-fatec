@@ -79,7 +79,7 @@ burguertec-app/
 
 ## 📌 Histórico de desenvolvimento
 
-O histórico de commits deste repositório reflete a ordem dos cards planejados no Kanban do projeto, um commit por funcionalidade entregue — da navegação principal até o gerenciamento completo do carrinho.
+O histórico de commits deste repositório reflete a ordem dos cards planejados no scrum do projeto, um commit por funcionalidade entregue — da navegação principal até o gerenciamento completo do carrinho.
 
 ## 🔄 Modelagem de Processos (BPMN)
 
