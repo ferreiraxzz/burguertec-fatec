@@ -1,0 +1,243 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1460 594" width="100%" role="img" aria-labelledby="bpmn-title bpmn-desc">
+  <title id="bpmn-title">Diagrama BPMN 2.0 — Fluxo Completo do Pedido (BurguerTec)</title>
+  <desc id="bpmn-desc">Diagrama de colaboração BPMN com três raias (Cliente, App React e Supabase/Admin) ilustrando da navegação no cardápio e personalização ao checkout, atualização em tempo real e gerenciamento administrativo.</desc>
+
+  <defs>
+    <!-- Seta sólida: Fluxo de Sequência -->
+    <marker id="seq-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#1f2937"/>
+    </marker>
+
+    <!-- Círculo aberto na origem: Fluxo de Mensagem -->
+    <marker id="msg-start" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle cx="5" cy="5" r="3.5" fill="#ffffff" stroke="#1f2937" stroke-width="1.5"/>
+    </marker>
+
+    <!-- Triângulo aberto na ponta: Fluxo de Mensagem -->
+    <marker id="msg-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 1 1.5 L 9.5 5 L 1 8.5 z" fill="#ffffff" stroke="#1f2937" stroke-width="1.4"/>
+    </marker>
+
+    <style>
+      .bg { fill: #ffffff; }
+      .pool { fill: #90d5f5; stroke: #1f2937; stroke-width: 1.8; }
+      .lane-sep { stroke: #1f2937; stroke-width: 1.4; }
+      .lane-header-bg { fill: #7ac8ef; stroke: #1f2937; stroke-width: 1.5; }
+      .lane-label { font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size: 11.5px; font-weight: 700; fill: #111827; letter-spacing: 0.5px; text-anchor: middle; }
+      .task { fill: #fff380; stroke: #1f2937; stroke-width: 1.5; rx: 10; ry: 10; }
+      .legend-task { fill: #fff380; stroke: #1f2937; stroke-width: 1.5; rx: 4; ry: 4; }
+      .task-text { font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size: 10.5px; font-weight: 700; fill: #111827; text-anchor: middle; }
+      .task-sub { font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size: 9px; font-weight: 500; fill: #374151; text-anchor: middle; }
+      .start-event { fill: #9ce665; stroke: #1f2937; stroke-width: 1.6; }
+      .end-event { fill: #ef6464; stroke: #1f2937; stroke-width: 3.4; }
+      .gateway { fill: #fff380; stroke: #1f2937; stroke-width: 1.6; }
+      .gateway-x { font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 700; fill: #111827; text-anchor: middle; }
+      .seq-flow { fill: none; stroke: #1f2937; stroke-width: 1.5; marker-end: url(#seq-arrow); }
+      .msg-flow { fill: none; stroke: #1f2937; stroke-width: 1.4; stroke-dasharray: 5 4; marker-start: url(#msg-start); marker-end: url(#msg-end); }
+      .flow-label { font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size: 10.5px; font-weight: 700; fill: #111827; }
+      .legend-text { font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size: 11px; fill: #374151; }
+    </style>
+  </defs>
+
+  <!-- Fundo branco para legibilidade em temas claro/escuro -->
+  <rect class="bg" x="0" y="0" width="1460" height="594" rx="8"/>
+
+  <!-- Pool principal -->
+  <rect class="pool" x="16" y="16" width="1428" height="530"/>
+
+  <!-- Cabeçalhos das Raias -->
+  <rect class="lane-header-bg" x="16" y="16" width="38" height="202"/>
+  <rect class="lane-header-bg" x="16" y="218" width="38" height="164"/>
+  <rect class="lane-header-bg" x="16" y="382" width="38" height="164"/>
+
+  <!-- Divisórias horizontais das Raias -->
+  <line class="lane-sep" x1="54" y1="218" x2="1444" y2="218"/>
+  <line class="lane-sep" x1="54" y1="382" x2="1444" y2="382"/>
+
+  <!-- Rótulos verticais das Raias -->
+  <text class="lane-label" transform="translate(39, 117) rotate(-90)">CLIENTE</text>
+  <text class="lane-label" transform="translate(39, 300) rotate(-90)">APP (REACT)</text>
+  <text class="lane-label" transform="translate(39, 464) rotate(-90)">SUPABASE / ADMIN</text>
+
+  <!-- ================================================================= -->
+  <!-- RAIA 1: CLIENTE (y = 16..218, linha base cy = 146)                -->
+  <!-- ================================================================= -->
+  <circle class="start-event" cx="82" cy="146" r="14"/>
+
+  <rect class="task" x="116" y="118" width="122" height="56"/>
+  <text class="task-text" x="177" y="142">ACESSAR</text>
+  <text class="task-text" x="177" y="157">PÁGINA INICIAL</text>
+
+  <rect class="task" x="260" y="118" width="122" height="56"/>
+  <text class="task-text" x="321" y="142">VISUALIZAR</text>
+  <text class="task-text" x="321" y="157">CARDÁPIO</text>
+
+  <rect class="task" x="404" y="118" width="128" height="56"/>
+  <text class="task-text" x="468" y="142">ESCOLHER</text>
+  <text class="task-text" x="468" y="157">PRODUTO</text>
+
+  <!-- Gateway Exclusivo: Personalizar? -->
+  <polygon class="gateway" points="568,126 588,146 568,166 548,146"/>
+  <text class="gateway-x" x="568" y="152">×</text>
+
+  <!-- Ramo superior opcional/obrigatório: Personalizar Pedido -->
+  <rect class="task" x="598" y="32" width="132" height="54"/>
+  <text class="task-text" x="664" y="55">PERSONALIZAR</text>
+  <text class="task-text" x="664" y="70">PEDIDO</text>
+
+  <rect class="task" x="706" y="118" width="130" height="56"/>
+  <text class="task-text" x="771" y="142">ADICIONAR AO</text>
+  <text class="task-text" x="771" y="157">CARRINHO</text>
+
+  <rect class="task" x="860" y="118" width="134" height="56"/>
+  <text class="task-text" x="927" y="141">AUTENTICAR</text>
+  <text class="task-sub" x="927" y="157">(Login / Cadastro)</text>
+
+  <rect class="task" x="1018" y="118" width="138" height="56"/>
+  <text class="task-text" x="1087" y="142">CONFIRMAR</text>
+  <text class="task-text" x="1087" y="157">CHECKOUT</text>
+
+  <rect class="task" x="1180" y="118" width="138" height="56"/>
+  <text class="task-text" x="1249" y="142">ACOMPANHAR</text>
+  <text class="task-text" x="1249" y="157">STATUS DO PEDIDO</text>
+
+  <circle class="end-event" cx="1358" cy="146" r="15"/>
+  <text class="flow-label" x="1382" y="142">Pedido</text>
+  <text class="flow-label" x="1382" y="156">concluído</text>
+
+  <!-- Fluxos de sequência Raia 1 -->
+  <line class="seq-flow" x1="96" y1="146" x2="115" y2="146"/>
+  <line class="seq-flow" x1="238" y1="146" x2="259" y2="146"/>
+  <line class="seq-flow" x1="382" y1="146" x2="403" y2="146"/>
+  <line class="seq-flow" x1="532" y1="146" x2="547" y2="146"/>
+  <path class="seq-flow" d="M 568 126 L 568 59 L 597 59"/>
+  <text class="flow-label" x="574" y="104">Sim</text>
+  <path class="seq-flow" d="M 730 59 L 771 59 L 771 117"/>
+  <line class="seq-flow" x1="588" y1="146" x2="705" y2="146"/>
+  <text class="flow-label" x="652" y="138">Não</text>
+  <line class="seq-flow" x1="836" y1="146" x2="859" y2="146"/>
+  <line class="seq-flow" x1="994" y1="146" x2="1017" y2="146"/>
+  <line class="seq-flow" x1="1156" y1="146" x2="1179" y2="146"/>
+  <line class="seq-flow" x1="1318" y1="146" x2="1341" y2="146"/>
+
+  <!-- ================================================================= -->
+  <!-- RAIA 2: APP (REACT) (y = 218..382, linha base cy = 300)           -->
+  <!-- ================================================================= -->
+  <circle class="start-event" cx="82" cy="300" r="14"/>
+
+  <rect class="task" x="116" y="272" width="122" height="56"/>
+  <text class="task-text" x="177" y="296">EXIBIR</text>
+  <text class="task-text" x="177" y="311">PÁGINA INICIAL</text>
+
+  <rect class="task" x="260" y="272" width="122" height="56"/>
+  <text class="task-text" x="321" y="296">CARREGAR</text>
+  <text class="task-text" x="321" y="311">CARDÁPIO</text>
+
+  <rect class="task" x="404" y="272" width="128" height="56"/>
+  <text class="task-text" x="468" y="296">EXIBIR DETALHES</text>
+  <text class="task-text" x="468" y="311">DO PRODUTO</text>
+
+  <rect class="task" x="554" y="272" width="128" height="56"/>
+  <text class="task-text" x="618" y="296">APLICAR OPÇÕES</text>
+  <text class="task-text" x="618" y="311">SELECIONADAS</text>
+
+  <rect class="task" x="706" y="272" width="130" height="56"/>
+  <text class="task-text" x="771" y="294">ATUALIZAR</text>
+  <text class="task-text" x="771" y="309">CARRINHO</text>
+  <text class="task-sub" x="771" y="321">(localStorage)</text>
+
+  <rect class="task" x="860" y="272" width="134" height="56"/>
+  <text class="task-text" x="927" y="296">VALIDAR SESSÃO</text>
+  <text class="task-text" x="927" y="311">E ENDEREÇO</text>
+
+  <rect class="task" x="1018" y="272" width="138" height="56"/>
+  <text class="task-text" x="1087" y="295">ENVIAR PEDIDO</text>
+  <text class="task-sub" x="1087" y="311">(RPC criar_pedido)</text>
+
+  <rect class="task" x="1180" y="272" width="138" height="56"/>
+  <text class="task-text" x="1249" y="295">ATUALIZAR TELA</text>
+  <text class="task-sub" x="1249" y="311">(Supabase Realtime)</text>
+
+  <circle class="end-event" cx="1358" cy="300" r="15"/>
+
+  <!-- Fluxos de sequência Raia 2 -->
+  <line class="seq-flow" x1="96" y1="300" x2="115" y2="300"/>
+  <line class="seq-flow" x1="238" y1="300" x2="259" y2="300"/>
+  <line class="seq-flow" x1="382" y1="300" x2="403" y2="300"/>
+  <line class="seq-flow" x1="532" y1="300" x2="553" y2="300"/>
+  <line class="seq-flow" x1="682" y1="300" x2="705" y2="300"/>
+  <line class="seq-flow" x1="836" y1="300" x2="859" y2="300"/>
+  <line class="seq-flow" x1="994" y1="300" x2="1017" y2="300"/>
+  <line class="seq-flow" x1="1156" y1="300" x2="1179" y2="300"/>
+  <line class="seq-flow" x1="1318" y1="300" x2="1341" y2="300"/>
+
+  <!-- ================================================================= -->
+  <!-- RAIA 3: SUPABASE / ADMIN (y = 382..546, linha base cy = 464)      -->
+  <!-- ================================================================= -->
+  <circle class="start-event" cx="82" cy="464" r="14"/>
+
+  <rect class="task" x="260" y="436" width="122" height="56"/>
+  <text class="task-text" x="321" y="458">CONSULTAR</text>
+  <text class="task-text" x="321" y="473">CARDÁPIO</text>
+  <text class="task-sub" x="321" y="485">(RLS público)</text>
+
+  <rect class="task" x="860" y="436" width="134" height="56"/>
+  <text class="task-text" x="927" y="458">AUTENTICAR</text>
+  <text class="task-sub" x="927" y="474">(auth.users → perfis)</text>
+
+  <rect class="task" x="1018" y="436" width="138" height="56"/>
+  <text class="task-text" x="1087" y="456">GRAVAR PEDIDO</text>
+  <text class="task-text" x="1087" y="471">E BAIXAR ESTOQUE</text>
+  <text class="task-sub" x="1087" y="484">(Transação + RLS)</text>
+
+  <rect class="task" x="1180" y="436" width="138" height="56"/>
+  <text class="task-text" x="1249" y="456">GERENCIAR STATUS</text>
+  <text class="task-text" x="1249" y="471">(PAINEL ADMIN)</text>
+  <text class="task-sub" x="1249" y="484">(Histórico + Estorno)</text>
+
+  <circle class="end-event" cx="1358" cy="464" r="15"/>
+
+  <!-- Fluxos de sequência Raia 3 -->
+  <line class="seq-flow" x1="96" y1="464" x2="259" y2="464"/>
+  <line class="seq-flow" x1="382" y1="464" x2="859" y2="464"/>
+  <line class="seq-flow" x1="994" y1="464" x2="1017" y2="464"/>
+  <line class="seq-flow" x1="1156" y1="464" x2="1179" y2="464"/>
+  <line class="seq-flow" x1="1318" y1="464" x2="1341" y2="464"/>
+
+  <!-- ================================================================= -->
+  <!-- FLUXOS DE MENSAGEM (Message Flows entre Raias)                    -->
+  <!-- ================================================================= -->
+  <line class="msg-flow" x1="177" y1="174" x2="177" y2="270"/>
+  <line class="msg-flow" x1="321" y1="272" x2="321" y2="176"/>
+  <line class="msg-flow" x1="321" y1="328" x2="321" y2="434"/>
+  <line class="msg-flow" x1="468" y1="174" x2="468" y2="270"/>
+  <line class="msg-flow" x1="618" y1="86"  x2="618" y2="270"/>
+  <line class="msg-flow" x1="771" y1="174" x2="771" y2="270"/>
+  <line class="msg-flow" x1="927" y1="174" x2="927" y2="270"/>
+  <line class="msg-flow" x1="927" y1="328" x2="927" y2="434"/>
+  <line class="msg-flow" x1="1087" y1="174" x2="1087" y2="270"/>
+  <line class="msg-flow" x1="1087" y1="328" x2="1087" y2="434"/>
+  <line class="msg-flow" x1="1249" y1="436" x2="1249" y2="330"/>
+  <line class="msg-flow" x1="1249" y1="272" x2="1249" y2="176"/>
+
+  <!-- ================================================================= -->
+  <!-- LEGENDA                                                           -->
+  <!-- ================================================================= -->
+  <circle class="start-event" cx="30" cy="570" r="8"/>
+  <text class="legend-text" x="44" y="574">Evento de Início</text>
+
+  <circle class="end-event" cx="152" cy="570" r="8"/>
+  <text class="legend-text" x="166" y="574">Evento de Fim</text>
+
+  <rect class="legend-task" x="264" y="560" width="22" height="18"/>
+  <text class="legend-text" x="294" y="574">Tarefa / Atividade</text>
+
+  <polygon class="gateway" points="424,560 434,570 424,580 414,570"/>
+  <text class="legend-text" x="442" y="574">Gateway Exclusivo</text>
+
+  <line class="seq-flow" x1="564" y1="570" x2="604" y2="570"/>
+  <text class="legend-text" x="612" y="574">Fluxo de Sequência</text>
+
+  <line class="msg-flow" x1="744" y1="570" x2="788" y2="570"/>
+  <text class="legend-text" x="796" y="574">Fluxo de Mensagem (entre raias)</text>
+</svg>

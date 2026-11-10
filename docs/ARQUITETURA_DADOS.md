@@ -3,40 +3,54 @@
 Contrato compartilhado entre o banco (`supabase/migrations/`) e o front (`src/`).
 Nomes em português, `snake_case`. Valores monetários em `numeric(10,2)`.
 
-## Diagrama (ER)
+## Diagrama (ER — consolidado v1–v3)
 
 ```mermaid
 erDiagram
   auth_users ||--|| perfis : "1:1"
   perfis ||--o{ enderecos : possui
+  perfis ||--o{ formas_pagamento_salvas : salva
   perfis ||--o{ pedidos : faz
+  perfis ||--o{ avaliacoes : escreve
+  perfis |o--o{ movimentacoes_estoque : registra
+  perfis |o--o{ pedidos_status_historico : altera
   categorias ||--o{ produtos : agrupa
-  enderecos ||--o{ pedidos : "entrega em"
-  pedidos ||--|{ itens_pedido : contem
+  produtos ||--o{ produto_opcoes : oferece
   produtos ||--o{ itens_pedido : referenciado
+  produtos ||--o{ movimentacoes_estoque : movimenta
+  enderecos |o--o{ pedidos : "entrega em"
+  pedidos ||--|{ itens_pedido : contem
+  pedidos ||--|{ pedidos_status_historico : registra
+  pedidos ||--o| avaliacoes : recebe
+  pedidos |o--o{ movimentacoes_estoque : origina
+  produto_opcoes |o--o{ itens_pedido : selecionada
   itens_pedido ||--o{ itens_pedido_adicionais : tem
   adicionais ||--o{ itens_pedido_adicionais : referenciado
-  pedidos ||--o| avaliacoes : recebe
 ```
 
 ## Tabelas
 
 | Tabela | Colunas principais | Observações |
 |---|---|---|
-| `categorias` | `id smallint identity PK`, `nome text unique`, `ordem int` | Ex.: Hambúrgueres, Combos, Bebidas |
-| `produtos` | `id text PK` (slug, ex. `smash-classico`), `categoria_id`, `nome`, `descricao`, `preco`, `imagem_url`, `imagem_posicao text default 'bottom'`, `permite_ponto bool default true`, `ativo bool default true`, `ordem int`, `created_at` | Substitui o array `MENU` de `App.jsx` |
+| `categorias` | `id smallint identity PK`, `nome text unique`, `ordem int` | Seções do cardápio (v2): Lanches (1), Acompanhamentos (2), Bebidas (3) |
+| `produtos` | `id text PK` (slug, ex. `smash-classico`), `categoria_id`, `nome`, `descricao`, `preco`, `imagem_url`, `imagem_posicao text default 'bottom'`, `permite_ponto bool default true`, `rotulo_opcao text null`, `ativo bool default true`, `ordem int`, `controla_estoque bool default false`, `estoque int default 0`, `estoque_minimo int default 0`, `created_at` | Substitui o array `MENU` de `App.jsx`; colunas de opção na v2 e estoque na v3 |
+| `produto_opcoes` | `id text PK` (slug), `produto_id FK produtos`, `nome`, `preco_adicional`, `ativo bool default true`, `ordem int` | Opções de sabor/tipo (v2). Se o produto tem opção ativa, escolher uma é obrigatório |
 | `adicionais` | `id text PK` (ex. `batata`), `nome`, `preco`, `ativo` | Batata rústica = R$ 6,00 |
 | `perfis` | `id uuid PK FK auth.users`, `nome`, `telefone`, `cpf unique`, `is_admin bool default false`, `created_at` | Criado por trigger no `auth.users` usando `raw_user_meta_data` (`nome`, `telefone`, `cpf`) |
 | `enderecos` | `id uuid PK`, `usuario_id FK perfis`, `apelido`, `cep`, `logradouro`, `numero`, `complemento`, `bairro`, `cidade`, `uf char(2)`, `principal bool`, `created_at` | |
+| `formas_pagamento_salvas` | `id uuid PK`, `usuario_id FK perfis`, `tipo forma_pagamento`, `apelido`, `bandeira`, `final_cartao char(4)`, `titular`, `validade`, `principal bool`, `created_at` | Atalho de preferência do cliente (v2). Nunca guarda número completo do cartão nem CVV; índice único parcial garante no máximo 1 `principal` |
 | `pedidos` | `id bigint identity PK`, `usuario_id FK perfis`, `endereco_id FK enderecos null` (`on delete set null`), `endereco_entrega jsonb null`, `status status_pedido`, `forma_pagamento forma_pagamento`, `subtotal`, `taxa_entrega`, `total`, `observacao`, `created_at`, `updated_at` | Total calculado no banco. `endereco_entrega` é o snapshot do endereço (`apelido`, `cep`, `logradouro`, `numero`, `complemento`, `bairro`, `cidade`, `uf`) gravado pela RPC; **`endereco_entrega IS NULL` = retirada no balcão**. O front exibe o endereço a partir dele, não de `endereco_id` |
-| `itens_pedido` | `id bigint identity PK`, `pedido_id FK`, `produto_id FK`, `nome_produto` (snapshot), `preco_unitario` (snapshot, já com adicionais), `quantidade int > 0`, `ponto_carne ponto_carne null`, `observacao`, `subtotal` | |
+| `itens_pedido` | `id bigint identity PK`, `pedido_id FK`, `produto_id FK`, `opcao_id FK produto_opcoes null`, `nome_produto` (snapshot), `opcao_nome` (snapshot), `preco_unitario` (snapshot, já com opção e adicionais), `quantidade int > 0`, `ponto_carne ponto_carne null`, `observacao`, `subtotal` | `opcao_id` e `opcao_nome` adicionados na v2 |
 | `itens_pedido_adicionais` | `item_id FK`, `adicional_id FK`, `preco` (snapshot); PK (`item_id`,`adicional_id`) | |
+| `pedidos_status_historico` | `id bigint identity PK`, `pedido_id FK pedidos`, `status status_pedido`, `alterado_por FK perfis null`, `created_at` | Gravado por triggers no insert e nas mudanças de `status` (v3) |
+| `movimentacoes_estoque` | `id bigint identity PK`, `produto_id FK produtos`, `quantidade int <> 0`, `motivo motivo_estoque`, `pedido_id FK pedidos null`, `observacao`, `usuario_id FK perfis null`, `created_at` | Ledger de entradas, ajustes, perdas, vendas e cancelamentos (v3) |
 | `avaliacoes` | `pedido_id PK FK pedidos`, `usuario_id`, `nota smallint 1..5`, `comentario`, `created_at` | Só pedidos `entregue`. Colunas legíveis via API limitadas (ver Segurança) |
 
 ### Enums
 - `status_pedido`: `recebido`, `em_preparo`, `saiu_para_entrega`, `entregue`, `cancelado`
 - `forma_pagamento`: `pix`, `cartao_credito`, `cartao_debito`, `dinheiro`
 - `ponto_carne`: `mal`, `ponto`, `bem` (mesmas chaves do `PONTO_LABEL` do front)
+- `motivo_estoque`: `entrada`, `ajuste`, `perda`, `venda`, `cancelamento` (v3)
 
 ## Função de checkout (RPC)
 
