@@ -8,7 +8,7 @@ Landing page e loja virtual de uma hamburgueria fictícia, desenvolvida como pro
 |---|---|
 | **Disciplina** | Programação para Dispositivos Móveis II |
 | **Professor** | Bruno Zolotareff dos Santos |
-| **Metodologia** | Ágil (Kanban) |
+| **Metodologia** | Ágil (Scrum) |
 | **Team Member** | Miguel Martins |
 | **Team Member** | Luis Felipe Maia da Costa |
 | **Equipe** | Hamburgueria |
