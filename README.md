@@ -17,7 +17,7 @@ Landing page e loja virtual de uma hamburgueria fictícia, desenvolvida como pro
 
 O **BURGUERTEC** é uma aplicação de pedidos para uma hamburgueria, pensada como um projeto **multiplataforma**: a versão **Web** é construída em **React**, e uma versão **Mobile** está planejada em **React Native**, compartilhando a mesma identidade visual, cardápio e lógica de negócio entre as duas plataformas.
 
-O desenvolvimento segue a metodologia ágil com **Kanban**: o board do Trello foi montado antes do início da implementação, e cada card corresponde a um commit no histórico deste repositório, refletindo a evolução real do projeto por funcionalidade.
+O desenvolvimento segue a metodologia ágil com **Scrum**: o board do Trello foi montado antes do início da implementação, e cada card corresponde a um commit no histórico deste repositório, refletindo a evolução real do projeto por funcionalidade.
 
 ## ✨ Funcionalidades
 
